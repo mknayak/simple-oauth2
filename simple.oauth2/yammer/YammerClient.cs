@@ -32,10 +32,10 @@ namespace simple.oauth.provider.yammer
             RestRequest request = new RestRequest(YammerConstants.REQUEST_TOKEN_URI);
             request.AddParameter("redirect_uri", "http://oauthtest.manas.com/home/yammer");
             request.AddParameter("client_id", clientId);
-            
+
             RestClient client = new RestClient();
             var uri = client.BuildUri(request);
-            
+
             return uri.AbsoluteUri;
         }
 
@@ -45,7 +45,7 @@ namespace simple.oauth.provider.yammer
         /// <param name="context">The context.</param>
         /// <param name="access_token">The access_token.</param>
         /// <param name="access_verifier">The access_verifier.</param>
-        public IUserData Authorize(string token)
+        public UserData Authorize(string token)
         {
             RestClient client = new RestClient();
             RestRequest request = new RestRequest(YammerConstants.ACCESS_TOKEN_URL, Method.POST);
@@ -55,25 +55,15 @@ namespace simple.oauth.provider.yammer
             request.AddParameter("client_secret", clientSecret);
 
             IRestResponse response = client.Execute(request);
-            var data = OAuthHelper.JsonToDynamic(response.Content);
+            var data = OAuthHelper.ContentToDynamic(response.Content);
 
-            return new YammerUserData
+            return new UserData
             {
-                id = Convert.ToString(data.access_token.user_id),
-                name = data.user.full_name,
-                link = data.user.web_url,
-                email = data.user.contact.email_addresses[0].address,
+                Id = Convert.ToString(data.access_token.user_id),
+                Name = data.user.full_name,
+                Link = data.user.web_url,
+                Email = data.user.contact.email_addresses[0].address,
             };
-                        
         }
-    }
-  
-    public class YammerUserData : IUserData
-    {
-        public string id { get; set; }
-        public string name { get; set; }
-        public string link { get; set; }
-        public string email { get; set; }
-        public string picture { get; set; }
     }
 }

@@ -56,7 +56,7 @@ namespace simple.oauth.provider.linkedin
         /// </summary>
         /// <param name="token">The token.</param>
         /// <returns></returns>
-        public IUserData Authorize(string token)
+        public UserData Authorize(string token)
         {
             RestClient client = new RestClient();
             RestRequest request = new RestRequest(LinkedInConstants.ACCESS_TOKEN_URL, Method.POST);
@@ -67,7 +67,7 @@ namespace simple.oauth.provider.linkedin
             request.AddParameter("grant_type", "authorization_code");
 
             IRestResponse response = client.Execute(request);
-            var data = OAuthHelper.JsonToDynamic(response.Content);
+            var data = OAuthHelper.ContentToDynamic(response.Content);
             string access_token = data.access_token;
             request = new RestRequest(LinkedInConstants.GET_USER_INFO, Method.GET);
             request.AddParameter("oauth2_access_token", access_token);
@@ -79,7 +79,7 @@ namespace simple.oauth.provider.linkedin
         }
     }
 
-    public class LinkedInUserData : IUserData
+    public class LinkedInUserData : UserData
     {
         public string id { get; set; }
         public string formattedName { get; set; }

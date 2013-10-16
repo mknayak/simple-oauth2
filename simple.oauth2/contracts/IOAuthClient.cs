@@ -30,7 +30,7 @@ namespace simple.oauth2
         /// <param name="httpMethod">The HTTP method.</param>
         /// <param name="additionalParameters">The additional parameters.</param>
         /// <returns></returns>
-        IUserData ValidateTokenAndGetUserInfo(string code);
+        UserData ValidateTokenAndGetUserInfo(string code);
     }
 }
 

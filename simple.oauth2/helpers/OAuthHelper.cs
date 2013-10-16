@@ -6,6 +6,7 @@
 /// </copyright>
 ///-----------------------------------------------------------------------
 
+using RestSharp.Contrib;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -62,18 +63,33 @@ namespace simple.oauth2
 
             return result.ToString();
         }
-        
+
         /// <summary>
         /// Jsons to dynamic.
         /// </summary>
-        /// <param name="jsonString">The json string.</param>
+        /// <param name="content">The json string.</param>
         /// <returns></returns>
-        public static dynamic JsonToDynamic(string jsonString)
+        public static dynamic ContentToDynamic(string content)
         {
-            JavaScriptSerializer jss = new JavaScriptSerializer();
-            jss.RegisterConverters(new JavaScriptConverter[] { new DynamicJsonConverter() });
+            if (!content.StartsWith("{"))
+            {
+                var nvc= HttpUtility.ParseQueryString(content);
+                dynamic returnObj = new ExpandoObject();
+                IDictionary<string, object> dict = returnObj;
 
-            return jss.Deserialize(jsonString, typeof(object)) as dynamic;
+                foreach (var key in nvc.AllKeys)
+                {
+                    dict.Add(key, nvc[key]);
+                }
+                return returnObj;
+            }
+            else
+            {
+                JavaScriptSerializer jss = new JavaScriptSerializer();
+                jss.RegisterConverters(new JavaScriptConverter[] { new DynamicJsonConverter() });
+
+                return jss.Deserialize(content, typeof(object)) as dynamic;
+            }
         }
     }
 }

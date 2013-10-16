@@ -33,7 +33,7 @@ namespace client.mvc4.Controllers
 
             if (client == null)
                 throw new Exception("You must configure a provider before use");
-            var user = (GoogleUserData)client.ValidateTokenAndGetUserInfo(code);
+            var user = client.ValidateTokenAndGetUserInfo(code);
 
             return Json(user,JsonRequestBehavior.AllowGet);
         }

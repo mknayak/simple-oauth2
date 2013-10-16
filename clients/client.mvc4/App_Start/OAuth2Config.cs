@@ -1,4 +1,5 @@
 ﻿using simple.oauth2;
+using simple.oauth2.providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace client.mvc4
             var factory = OAuthStore.Current.Factory;
 
             factory.RegisterInstance("GooglePlus", new GooglePlusClient("93975902289.apps.googleusercontent.com", "CqdSp9ssOe6Z0BPTt6QrQPzo"));
+            factory.RegisterInstance("FaceBook", new FacebookClient("544743042263211", "28bfa573917062a012d7697c9417cd00"));
         }
 
         public static IEnumerable<string> RegisteredProviders
