@@ -20,7 +20,7 @@ namespace simple.oauth2
         /// Tries to get the authentication URL.
         /// </summary>
         /// <returns></returns>
-        Uri GetAuthenticationUrl(IEnumerable<Parameter> additionalParameters);
+        Uri GetClientRedirectUri();
 
         /// <summary>
         /// Gets the access token.
@@ -30,14 +30,7 @@ namespace simple.oauth2
         /// <param name="httpMethod">The HTTP method.</param>
         /// <param name="additionalParameters">The additional parameters.</param>
         /// <returns></returns>
-        string GetAccessToken(string token, Method httpMethod, IEnumerable<Parameter> additionalParameters);
-
-        /// <summary>
-        /// Authorizes with the specified token.
-        /// </summary>
-        /// <param name="token">The token.</param>
-        /// <returns></returns>
-        IUserData Authorize(string access_token, Method httpMethod);
+        IUserData ValidateTokenAndGetUserInfo(string code);
     }
 }
 

@@ -34,6 +34,8 @@ namespace simple.oauth2
             this.urls = urls;
         }
 
+        #region Implemented Methods
+
         /// <summary>
         /// Tries to get the authentication URL.
         /// </summary>
@@ -41,11 +43,13 @@ namespace simple.oauth2
         /// <param name="additionalParameters">The additional parameters.</param>
         /// <param name="redirectUri">The redirect URI.</param>
         /// <returns></returns>
-        public virtual Uri GetAuthenticationUrl(IEnumerable<Parameter> additionalParameters)
+        protected RestRequest GetAuthenticationRequest(string scope, params Parameter[] additionalParameters)
         {
             RestRequest request = new RestRequest(urls.REQUEST_ACCESS_URL, Method.GET);
             request.AddParameter("client_id", clientId);
             request.AddParameter("redirect_uri", urls.REDIRECT_URL);
+            request.AddParameter("scope", scope);
+            request.AddParameter("response_type", "code");
             if (additionalParameters != null && additionalParameters.Any())
             {
                 foreach (var param in additionalParameters)
@@ -54,7 +58,7 @@ namespace simple.oauth2
                 }
             }
 
-            return new RestClient().BuildUri(request);
+            return request;
         }
 
         /// <summary>
@@ -65,7 +69,7 @@ namespace simple.oauth2
         /// <param name="httpMethod">The HTTP method.</param>
         /// <param name="additionalParameters">The additional parameters.</param>
         /// <returns></returns>
-        public virtual string GetAccessToken(string token, Method httpMethod, IEnumerable<Parameter> additionalParameters)
+        protected string GetAccessToken(string token, Method httpMethod, params Parameter[] additionalParameters)
         {
             if (ValidateToken(token))
                 throw new ArgumentException("Invalid token.");
@@ -76,10 +80,12 @@ namespace simple.oauth2
             request.AddParameter("code", token);
             request.AddParameter("client_id", clientId);
             request.AddParameter("client_secret", clientSecret);
+            request.AddParameter("redirect_uri", urls.REDIRECT_URL);
             if (additionalParameters != null && additionalParameters.Any())
             {
                 foreach (var param in additionalParameters)
                 {
+                    param.Type = ParameterType.GetOrPost;
                     request.AddParameter(param);
                 }
             }
@@ -95,7 +101,7 @@ namespace simple.oauth2
         /// <param name="access_token">The access_token.</param>
         /// <param name="userProfileUrl">The user profile URL.</param>
         /// <returns></returns>
-        public virtual IUserData Authorize(string access_token, Method httpMethod)
+        protected IUserData Authorize(string access_token, Method httpMethod)
         {
             RestRequest request = new RestRequest(urls.USER_PROFILE_URL, httpMethod);
             request.AddParameter("access_token", access_token);
@@ -105,14 +111,47 @@ namespace simple.oauth2
 
             return GetUserData(result.Content);
         }
+        
+        #endregion
 
+        #region Virtual Methods
         /// <summary>
         /// Validates the token.
         /// </summary>
         /// <param name="token">The token.</param>
         /// <returns></returns>
-        public abstract bool ValidateToken(string token);
+        protected virtual bool ValidateToken(string token)
+        {
+            var providerName = this.GetType().Name;
+            return OAuthStore.Current.TokenRepository.ValidateToken(token, providerName);
+        }        
+        protected virtual RestRequest GetAuthenticationRequest()
+        {
+            return this.GetAuthenticationRequest(string.Empty, null);
+        }
+        protected virtual string GetAccessToken(string token)
+        {
+            return this.GetAccessToken(token, Method.GET, null);
+        }
+        protected virtual IUserData Authorize(string access_token)
+        {
+            return this.Authorize(access_token, Method.GET);
+        }
+        #endregion
 
+        #region Public Methods
+        public Uri GetClientRedirectUri()
+        {
+            var request= GetAuthenticationRequest();
+            return new RestClient().BuildUri(request);
+        }
+
+        public IUserData ValidateTokenAndGetUserInfo(string code)
+        {
+            string access_token = GetAccessToken(code);
+            return Authorize(access_token);
+        }
+        #endregion
         /// <summary>
         /// Gets the user data.
         /// </summary>

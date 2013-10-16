@@ -1,0 +1,15 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>OAUth2 Demo</h2>
+
+Please Login using following services
+
+<ul>
+    @foreach (var provider in client.mvc4.OAuth2Config.RegisteredProviders)
+    {
+        <li><a href="/home/redirectTo?provider=@provider">@provider</a></li>
+    }
+</ul>

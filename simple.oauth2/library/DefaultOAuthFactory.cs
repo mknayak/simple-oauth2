@@ -11,42 +11,38 @@ namespace simple.oauth2
     /// <summary>
     /// Default OAuthFactory
     /// </summary>
-    internal class DefaultOAuthFactory : IOAuthFactory
+    internal class DefaultOAuthFactory : IOAuthFactory<IOAuthClient>
     {
         /// <summary>
         /// The _cache
         /// </summary>
-        DictionaryConfiguration<object> _cache = new DictionaryConfiguration<object>();
+        DictionaryConfiguration<IOAuthClient> _cache = new DictionaryConfiguration<IOAuthClient>();
 
         /// <summary>
         /// Registers the instance.
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="instance">The instance.</param>
-        public void RegisterInstance(string key, object instance)
+        public void RegisterInstance(string key, IOAuthClient instance)
         {
             _cache.AddOrUpdate(key, instance);
         }
-
-        /// <summary>
-        /// Gets the instance.
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <returns></returns>
-        public object GetInstance(string key)
-        {
-            return _cache.Get(key); ;
-        }
-
+        
         /// <summary>
         /// Gets the instance.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="key">The key.</param>
         /// <returns></returns>
-        public T GetInstance<T>(string key)
+        public IOAuthClient GetInstance(string key)
         {
-            return (T)GetInstance(key);
+            return _cache.Get(key);
+        }
+
+
+        public System.Collections.Generic.IEnumerable<string> GetRegisteredProviders()
+        {
+            return _cache.Keys();
         }
     }
 }

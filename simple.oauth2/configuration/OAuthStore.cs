@@ -4,7 +4,7 @@
 /// <author>Manas Kumar Nayak</author>
 /// <date>Wednesday, October 16, 2013 12:37:50 AM</date>
 /// </copyright>
-//-----------------------------------------------------------------------
+///-----------------------------------------------------------------------
 
 namespace simple.oauth2
 {
@@ -22,14 +22,14 @@ namespace simple.oauth2
             private set;
         }
 
-        private IOAuthFactory _factory;
+        private IOAuthFactory<IOAuthClient> _factory;
         /// <summary>
         /// Gets the factory.
         /// </summary>
         /// <value>
         /// The factory.
         /// </value>
-        public IOAuthFactory Factory
+        public IOAuthFactory<IOAuthClient> Factory
         {
             get
             {
@@ -59,7 +59,7 @@ namespace simple.oauth2
         /// Sets the OAuth factory.
         /// </summary>
         /// <param name="factory">The factory.</param>
-        public void SetOAuthFactory(IOAuthFactory factory)
+        public void SetOAuthFactory(IOAuthFactory<IOAuthClient> factory)
         {
             this._factory = factory;
         }

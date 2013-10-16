@@ -6,31 +6,29 @@
 /// </copyright>
 ///-----------------------------------------------------------------------
 
+using System.Collections.Generic;
 namespace simple.oauth2
 {
     /// <summary>
     /// IOAuthFactory
     /// </summary>
-    public interface IOAuthFactory
+    public interface IOAuthFactory<T>
     {
         /// <summary>
         /// Registers the instance.
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="instance">The instance.</param>
-        void RegisterInstance(string key, object instance);
-        /// <summary>
-        /// Gets the instance.
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <returns></returns>
-        object GetInstance(string key);
+        void RegisterInstance(string key, T instance);
+        
         /// <summary>
         /// Gets the instance.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="key">The key.</param>
         /// <returns></returns>
-        T GetInstance<T>(string key);
+        T GetInstance(string key);
+
+        IEnumerable<string> GetRegisteredProviders();
     }
 }

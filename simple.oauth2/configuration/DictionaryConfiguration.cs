@@ -12,6 +12,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using simple.oauth2.configuration;
 
 namespace simple.oauth2
 {
@@ -20,7 +21,7 @@ namespace simple.oauth2
     /// </summary>
     public class DictionaryConfiguration<T>
     {
-        ConcurrentDictionary<string, T> dict = new ConcurrentDictionary<string, T>();
+        ConcurrentDictionary<string, T> dict = new ConcurrentDictionary<string, T>(new CaseInsensativeCompararer());
 
         /// <summary>
         /// Gets or sets the <see cref="System.String"/> with the specified key.
@@ -96,7 +97,7 @@ namespace simple.oauth2
         /// Adds the range.
         /// </summary>
         /// <param name="range">The range.</param>
-        public void AddRange(IDictionary<string,T> range)
+        public void AddRange(IDictionary<string, T> range)
         {
             foreach (var item in range)
             {
@@ -113,6 +114,15 @@ namespace simple.oauth2
         public bool Contains(string key)
         {
             return dict.ContainsKey(key);
+        }
+
+        /// <summary>
+        /// Get Keys for this instance.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<string> Keys()
+        {
+            return dict.Keys;
         }
     }
 }

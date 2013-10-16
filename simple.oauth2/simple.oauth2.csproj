@@ -44,7 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="configuration\CaseInsensativeCompararer.cs" />
     <Compile Include="configuration\DictionaryConfiguration.cs" />
+    <Compile Include="configuration\OAuthConfiguration.cs" />
     <Compile Include="configuration\OAuthStore.cs" />
     <Compile Include="contracts\IOAuthClient.cs" />
     <Compile Include="contracts\IOAuthFactory.cs" />
