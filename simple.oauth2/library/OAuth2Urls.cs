@@ -20,12 +20,11 @@ namespace simple.oauth2
         /// <param name="accessTokenUrl">The access token URL.</param>
         /// <param name="userProfileUrl">The user profile URL.</param>
         /// <param name="redirectUrl">The redirect URL.</param>
-        public OAuth2Urls(string requestAccessUrl, string accessTokenUrl, string userProfileUrl, string redirectUrl)
+        public OAuth2Urls(string requestAccessUrl, string accessTokenUrl, string userProfileUrl)
         {
             this.REQUEST_ACCESS_URL = requestAccessUrl;
             this.ACCESS_TOKEN_URL = accessTokenUrl;
             this.USER_PROFILE_URL = userProfileUrl;
-            this.REDIRECT_URL = redirectUrl;
         }
         /// <summary>
         /// Gets or sets the REQUEST ACCESS URL.
@@ -48,13 +47,5 @@ namespace simple.oauth2
         /// The USER PROFILE URL.
         /// </value>
         public string USER_PROFILE_URL { get; set; }
-
-        /// <summary>
-        /// Gets or sets the REDIRECT URL.
-        /// </summary>
-        /// <value>
-        /// The REDIRECT URL.
-        /// </value>
-        public string REDIRECT_URL { get; set; }
     }
 }
