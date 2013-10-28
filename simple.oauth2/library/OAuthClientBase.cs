@@ -162,6 +162,7 @@ namespace simple.oauth2
         /// <summary>
         /// Tries to get the authentication URL.
         /// </summary>
+        /// <param name="state">The state.</param>
         /// <returns></returns>
         public Uri GetClientRedirectUri(IDictionary<string, string> state)
         {
@@ -185,7 +186,9 @@ namespace simple.oauth2
         /// <summary>
         /// Gets the access token.
         /// </summary>
-        /// <param name="code"></param>
+        /// <param name="code">The code.</param>
+        /// <param name="stateString">The state string.</param>
+        /// <param name="state">The state.</param>
         /// <returns></returns>
         public UserData ValidateTokenAndGetUserInfo(string code, string stateString, out IDictionary<string, string> state)
         {
@@ -208,6 +211,13 @@ namespace simple.oauth2
             return GetUserData(response.Content);
         }
 
+        /// <summary>
+        /// Validates the specified state string.
+        /// </summary>
+        /// <param name="stateString">The state string.</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentException">
+        /// </exception>
         private IDictionary<string, string> Validate(string stateString)
         {
             IDictionary<string, string> state;

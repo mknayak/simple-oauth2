@@ -19,16 +19,16 @@ namespace simple.oauth2
         /// <summary>
         /// Tries to get the authentication URL.
         /// </summary>
+        /// <param name="state">The state.</param>
         /// <returns></returns>
         Uri GetClientRedirectUri(IDictionary<string, string> state);
 
         /// <summary>
         /// Gets the access token.
         /// </summary>
-        /// <param name="token">The token.</param>
-        /// <param name="accessTokenUrl">The access token URL.</param>
-        /// <param name="httpMethod">The HTTP method.</param>
-        /// <param name="additionalParameters">The additional parameters.</param>
+        /// <param name="code">The code.</param>
+        /// <param name="stateString">The state string.</param>
+        /// <param name="state">The state.</param>
         /// <returns></returns>
         UserData ValidateTokenAndGetUserInfo(string code, string stateString, out IDictionary<string, string> state);
     }
