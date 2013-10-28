@@ -20,7 +20,7 @@ namespace simple.oauth2
         /// Tries to get the authentication URL.
         /// </summary>
         /// <returns></returns>
-        Uri GetClientRedirectUri();
+        Uri GetClientRedirectUri(IDictionary<string, string> state);
 
         /// <summary>
         /// Gets the access token.
@@ -30,7 +30,7 @@ namespace simple.oauth2
         /// <param name="httpMethod">The HTTP method.</param>
         /// <param name="additionalParameters">The additional parameters.</param>
         /// <returns></returns>
-        UserData ValidateTokenAndGetUserInfo(string code);
+        UserData ValidateTokenAndGetUserInfo(string code, string stateString, out IDictionary<string, string> state);
     }
 }
 

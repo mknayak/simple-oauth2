@@ -7,6 +7,7 @@
 ///-----------------------------------------------------------------------
 
 using RestSharp;
+using RestSharp.Contrib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ using System.Linq;
 namespace simple.oauth2
 {
     /// <summary>
-    /// OAuthClientBase
+    /// OAuth Client Base
     /// </summary>
     public abstract class OAuthClientBase : IOAuthClient
     {
@@ -22,7 +23,7 @@ namespace simple.oauth2
         private string clientSecret;
         private OAuth2Urls urls;
         private string providerName;
-
+        private ITokenRepository repository;
         /// <summary>
         /// Initializes a new instance of the <see cref="OAuthClientBase"/> class.
         /// </summary>
@@ -34,6 +35,7 @@ namespace simple.oauth2
             this.clientSecret = clientSecret;
             this.urls = urls;
             this.providerName = GetType().Name;
+            this.repository = OAuthStore.Current.TokenRepository;
         }
 
         #region Implemented Methods
@@ -45,7 +47,7 @@ namespace simple.oauth2
         /// <returns></returns>
         protected RestRequest GetAuthenticationRequest(params Parameter[] additionalParameters)
         {
-            if (!Uri.IsWellFormedUriString(REDIRECT_URL,UriKind.Absolute))
+            if (!Uri.IsWellFormedUriString(REDIRECT_URL, UriKind.Absolute))
             {
                 throw new ArgumentException("Redirect uri should be an absolute url");
             }
@@ -161,9 +163,21 @@ namespace simple.oauth2
         /// Tries to get the authentication URL.
         /// </summary>
         /// <returns></returns>
-        public Uri GetClientRedirectUri()
+        public Uri GetClientRedirectUri(IDictionary<string, string> state)
         {
             var request = GetAuthenticationRequest();
+            string verifyCode = Guid.NewGuid().ToString("N");
+
+            repository.TryAddToken(this.providerName, verifyCode);
+
+            if (state == null)
+                state = new Dictionary<string, string>();
+
+            state[OAuthConstants.VERIFY_CODE] = verifyCode;
+
+            var stateValue = state.Select(k => string.Format("{0}={1}", k.Key, k.Value)).Aggregate((f, s) => f + "&" + s);
+
+            request.AddParameter(OAuthConstants.STATE, OAuthHelper.Base64Encode(stateValue));
 
             return new RestClient().BuildUri(request);
         }
@@ -173,8 +187,10 @@ namespace simple.oauth2
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
-        public UserData ValidateTokenAndGetUserInfo(string code)
+        public UserData ValidateTokenAndGetUserInfo(string code, string stateString, out IDictionary<string, string> state)
         {
+            state = Validate(stateString);
+
             RestClient client = new RestClient();
 
             var accessTokenRequest = GetAccessTokenRequest(code);
@@ -190,6 +206,30 @@ namespace simple.oauth2
                 response = client.Execute(authorizeRequest);
             }
             return GetUserData(response.Content);
+        }
+
+        private IDictionary<string, string> Validate(string stateString)
+        {
+            IDictionary<string, string> state;
+            if (string.IsNullOrWhiteSpace(stateString))
+                throw new ArgumentException(string.Format("ERRORCODE:{0},ERROR:{1}", (int)OAuthErrors.StateMissing, "State is required."));
+
+            var stateValue = OAuthHelper.Base64Decode(stateString);
+            var nvc = HttpUtility.ParseQueryString(stateValue);
+
+            state = nvc.AllKeys.Select(n => new { Key = n, Value = nvc[n] }).ToDictionary(c => c.Key, c => c.Value);
+            var verifyCode = state[OAuthConstants.VERIFY_CODE];
+            if (string.IsNullOrWhiteSpace(verifyCode))
+                throw new ArgumentException(string.Format("ERRORCODE:{0},ERROR:{1}", (int)OAuthErrors.VerifyCodeMissing, "VerifyCode is missing."));
+
+            if (state.Remove(OAuthConstants.VERIFY_CODE))
+            {
+                if (!this.repository.ValidateAndRemove(this.providerName, verifyCode))
+                {
+                    throw new ArgumentException(string.Format("ERRORCODE:{0},ERROR:{1}", (int)OAuthErrors.UnableToVerify, "unable to verify the request origin."));
+                }
+            }
+            return state;
         }
         #endregion
 

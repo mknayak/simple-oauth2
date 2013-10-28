@@ -22,20 +22,21 @@ namespace client.mvc4.Controllers
             if (client == null)
                 throw new Exception("You must configure a provider before use");
 
-            var redirectUrl = client.GetClientRedirectUri();
+            var redirectUrl = client.GetClientRedirectUri(null);
 
             return new RedirectResult(redirectUrl.AbsoluteUri);
         }
 
-        public JsonResult OauthCallback(string provider,string code)
+        public JsonResult OauthCallback(string provider, string code, string state)
         {
             var client = factory.GetInstance(provider);
 
             if (client == null)
                 throw new Exception("You must configure a provider before use");
-            var user = client.ValidateTokenAndGetUserInfo(code);
+            IDictionary<string, string> stateDict;
+            var user = client.ValidateTokenAndGetUserInfo(code, state,out stateDict);
 
-            return Json(user,JsonRequestBehavior.AllowGet);
+            return Json(user, JsonRequestBehavior.AllowGet);
         }
     }
 }

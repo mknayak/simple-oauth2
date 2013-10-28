@@ -51,6 +51,7 @@
     <Compile Include="contracts\IOAuthFactory.cs" />
     <Compile Include="contracts\ITokenRepository.cs" />
     <Compile Include="contracts\IUserData.cs" />
+    <Compile Include="contracts\OAuthConstants.cs" />
     <Compile Include="helpers\DynamicJsonConverter.cs" />
     <Compile Include="helpers\OAuthHelper.cs" />
     <Compile Include="library\DefaultOAuthFactory.cs" />
