@@ -67,6 +67,16 @@ namespace simple.oauth2.providers
         {
             get { return "https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"; }
         }
+        /// <summary>
+        /// Gets the name.
+        /// </summary>
+        /// <value>
+        /// The name.
+        /// </value>
+        public override string Name
+        {
+            get { return "GooglePlus"; }
+        }
     }
 
 }

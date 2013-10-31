@@ -17,6 +17,13 @@ namespace simple.oauth2
     public interface IOAuthClient
     {
         /// <summary>
+        /// Gets the name of current client
+        /// </summary>
+        /// <value>
+        /// The name.
+        /// </value>
+        string Name { get; }
+        /// <summary>
         /// Tries to get the authentication URL.
         /// </summary>
         /// <param name="state">The state.</param>

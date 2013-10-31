@@ -153,7 +153,8 @@ namespace simple.oauth2
                 Id = obj.id,
                 Name = obj.name,
                 Link = obj.link,
-                Email = obj.email
+                Email = obj.email,
+                Provider = Name
             };
         }
         #endregion
@@ -250,6 +251,7 @@ namespace simple.oauth2
         /// The scope.
         /// </value>
         public abstract string Scope { get; }
+        public abstract string Name { get; }
 
         /// <summary>
         /// Gets or sets the REDIRECT URL.
@@ -258,5 +260,6 @@ namespace simple.oauth2
         /// The REDIRECT URL.
         /// </value>
         protected string REDIRECT_URL { get; set; }
+
     }
 }

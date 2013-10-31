@@ -55,7 +55,6 @@ namespace simple.oauth2.providers
         protected override RestSharp.RestRequest GetAuthenticationRequest()
         {
             var request = base.GetAuthenticationRequest();
-            request.AddParameter("state", Guid.NewGuid().ToString("N"));
             return request;
         }
 
@@ -101,8 +100,19 @@ namespace simple.oauth2.providers
                 Id = user.id,
                 Name = user.formattedName,
                 Email = user.emailAddress,
-                Link = user.publicProfileUrl
+                Link = user.publicProfileUrl,
+                Provider=Name
             };
+        }
+        /// <summary>
+        /// Gets the name.
+        /// </summary>
+        /// <value>
+        /// The name.
+        /// </value>
+        public override string Name
+        {
+            get { return "LinkedIn"; }
         }
     }
 }

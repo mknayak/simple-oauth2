@@ -66,7 +66,19 @@ namespace simple.oauth2.providers
                 Name = data.user.full_name,
                 Link = data.user.web_url,
                 Email = data.user.contact.email_addresses[0].address,
+                Provider= Name
             };
+        }
+
+        /// <summary>
+        /// Gets the name.
+        /// </summary>
+        /// <value>
+        /// The name.
+        /// </value>
+        public override string Name
+        {
+            get { return "Yammer"; }
         }
     }
 }

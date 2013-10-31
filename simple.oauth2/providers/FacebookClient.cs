@@ -44,5 +44,16 @@ namespace simple.oauth2.providers
         {
             get { return "email"; }
         }
+
+        /// <summary>
+        /// Gets the name.
+        /// </summary>
+        /// <value>
+        /// The name.
+        /// </value>
+        public override string Name
+        {
+            get { return "FaceBook"; }
+        }
     }
 }
